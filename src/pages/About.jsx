@@ -1,106 +1,86 @@
 import { useNavigate } from "react-router-dom";
 
-const STATS = [
-  { value:"6+",   label:"Career Fields",   icon:"🎯" },
-  { value:"3",    label:"Job APIs",         icon:"🌐" },
-  { value:"Free", label:"Always Free",      icon:"💚" },
-  { value:"AI",   label:"Powered By",       icon:"🤖" },
-];
-
 const FEATURES = [
-  { icon:"🔍", title:"Live Job Search",      desc:"Real-time results from Adzuna, Remotive & Jooble — Indian + global jobs combined." },
-  { icon:"🎯", title:"Career Quiz",          desc:"5-question personality quiz that matches you to your best-fit tech career." },
-  { icon:"🗺️", title:"Interactive Roadmap",  desc:"Step-by-step learning plans with checkboxes to track your progress." },
-  { icon:"🧭", title:"Industry Explorer",    desc:"Deep-dives into 6 tech fields — roadmaps, skills, salaries explained simply." },
-  { icon:"📄", title:"Resume Analyzer",      desc:"Upload your resume, get instant career suggestions from keyword detection." },
-  { icon:"🤖", title:"AI Mock Interview",    desc:"Real questions, live timer, AI scoring across 4 dimensions with written feedback." },
-  { icon:"🔥", title:"Skills Heatmap",       desc:"Visual demand map of 35+ tech skills with growth % and salary ranges." },
-  { icon:"💬", title:"AI Career Chatbot",    desc:"Ask any career question and get instant answers from Claude AI." },
+  { icon: "🎯", title: "Career Quiz",        desc: "Answer 5 simple questions and discover which tech career suits your personality and interests." },
+  { icon: "🧭", title: "Explore Careers",    desc: "Detailed guides for 6 tech fields — what they do, skills needed, salary ranges and more." },
+  { icon: "🗺️", title: "Learning Roadmap",   desc: "Step-by-step learning plans with checkboxes so you always know what to do next." },
+  { icon: "💼", title: "Live Job Search",     desc: "Real jobs from 3 sources — Adzuna, Remotive and Jooble — India + worldwide." },
+  { icon: "🤖", title: "Mock Interview",      desc: "Practice with real interview questions, get timed, and receive AI feedback instantly." },
+  { icon: "🔥", title: "Skills Heatmap",      desc: "Visual chart showing which tech skills are most in demand and what salary they pay." },
+  { icon: "📄", title: "Resume Analyzer",     desc: "Upload your resume and get matched to career paths based on your existing skills." },
+  { icon: "💬", title: "SkillBot Chatbot",    desc: "Ask any career question and get instant answers — available on every page." },
 ];
 
 export default function About() {
   const navigate = useNavigate();
-
   return (
-    <div style={{ minHeight:"100vh" }}>
+    <div style={{ minHeight: "100vh" }}>
+
       {/* Header */}
-      <div style={{ padding:"60px 24px 50px", textAlign:"center", position:"relative", overflow:"hidden", borderBottom:"1px solid rgba(255,255,255,0.05)" }}>
-        <div style={{ position:"absolute", top:-100, left:"50%", transform:"translateX(-50%)", width:600, height:300, background:"radial-gradient(ellipse, rgba(250,204,21,0.08), transparent 70%)", pointerEvents:"none" }} />
-        <div style={{ position:"relative" }}>
-          <div className="badge" style={{ marginBottom:18 }}>ℹ️ About SkillFinder</div>
-          <h1 style={{ fontFamily:"'Syne',sans-serif", fontSize:"clamp(28px,5vw,52px)", fontWeight:900, lineHeight:1.1, marginBottom:16 }}>
-            Built to Help Students<br />
-            <span style={{ background:"linear-gradient(90deg,#facc15,#f97316)", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent" }}>
-              Find Their Career Path
-            </span>
-          </h1>
-          <p style={{ color:"#475569", fontSize:16, maxWidth:500, margin:"0 auto 44px", lineHeight:1.7 }}>
-            A free platform helping tech students in India discover careers, learn roadmaps, and find real jobs — all in one place.
-          </p>
-          {/* Stats */}
-          <div style={{ display:"flex", gap:16, justifyContent:"center", flexWrap:"wrap" }}>
-            {STATS.map(s => (
-              <div key={s.label} style={{ background:"rgba(255,255,255,0.04)", backdropFilter:"blur(20px)", border:"1px solid rgba(255,255,255,0.08)", borderRadius:16, padding:"22px 32px", minWidth:120 }}>
-                <div style={{ fontSize:28, marginBottom:4 }}>{s.icon}</div>
-                <div style={{ fontFamily:"'Syne',sans-serif", fontSize:30, fontWeight:900, color:"#facc15" }}>{s.value}</div>
-                <div style={{ fontSize:12, color:"#475569", marginTop:4 }}>{s.label}</div>
-              </div>
-            ))}
-          </div>
+      <div style={{ padding: "52px 20px 44px", textAlign: "center", borderBottom: "1px solid rgba(255,255,255,0.06)", background: "radial-gradient(ellipse at 50% 0%, rgba(245,158,11,0.05) 0%, transparent 65%)" }}>
+        <div className="badge" style={{ marginBottom: 16 }}>ℹ️ About SkillFinder</div>
+        <h1 style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontSize: "clamp(26px,4.5vw,46px)", fontWeight: 800, lineHeight: 1.15, marginBottom: 16, maxWidth: 600, margin: "0 auto 16px" }}>
+          Built for Students Who Want to Break Into Tech
+        </h1>
+        <p style={{ color: "#64748b", fontSize: 16, maxWidth: 500, margin: "0 auto 32px", lineHeight: 1.75 }}>
+          SkillFinder is a free platform that helps students in India and worldwide discover tech careers, learn the right skills, and find real jobs — all in one place.
+        </p>
+
+        {/* Stats */}
+        <div style={{ display: "flex", justifyContent: "center", gap: 24, flexWrap: "wrap" }}>
+          {[["6+", "Career Fields"], ["3", "Job Sources"], ["Free", "Always"], ["AI", "Powered"]].map(([val, label]) => (
+            <div key={label} style={{ textAlign: "center" }}>
+              <div style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontSize: 28, fontWeight: 800, background: "linear-gradient(90deg,#f59e0b,#f97316)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>{val}</div>
+              <div style={{ fontSize: 12, color: "#475569", fontWeight: 600 }}>{label}</div>
+            </div>
+          ))}
         </div>
       </div>
 
-      <div style={{ maxWidth:980, margin:"50px auto 60px", padding:"0 24px" }}>
+      <div style={{ maxWidth: 1000, margin: "0 auto", padding: "48px 20px 60px" }}>
+
         {/* Mission */}
-        <div style={{ background:"rgba(250,204,21,0.04)", border:"1px solid rgba(250,204,21,0.15)", borderRadius:20, padding:"36px 40px", marginBottom:32, backdropFilter:"blur(20px)" }}>
-          <h2 style={{ fontSize:22, marginBottom:14 }}>🎯 Our Mission</h2>
-          <p style={{ color:"#64748b", fontSize:16, lineHeight:1.8 }}>
-            Many students finish their diploma or degree without knowing which career suits them or how to get there.
-            SkillFinder bridges that gap — giving every student access to career guidance, real job listings,
-            personalized roadmaps, and AI-powered tools to get hired, completely free.
+        <div style={{ background: "rgba(245,158,11,0.05)", border: "1px solid rgba(245,158,11,0.15)", borderRadius: 16, padding: "28px 32px", marginBottom: 48, textAlign: "center" }}>
+          <h2 style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontSize: 20, fontWeight: 800, marginBottom: 12 }}>Our Mission</h2>
+          <p style={{ color: "#94a3b8", fontSize: 15, lineHeight: 1.8, maxWidth: 560, margin: "0 auto" }}>
+            Many students want to get into tech but don't know where to start. SkillFinder removes the confusion — we show you exactly which career fits you, what to learn, and where to apply. No experience needed to begin.
           </p>
         </div>
 
         {/* Features */}
-        <h2 style={{ fontSize:22, marginBottom:20 }}>✨ Platform Features</h2>
-        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(220px,1fr))", gap:14, marginBottom:40 }}>
-          {FEATURES.map(f => (
-            <div key={f.title} className="job-card" style={{ padding:"22px 20px" }}>
-              <div style={{ fontSize:28, marginBottom:10 }}>{f.icon}</div>
-              <h4 style={{ fontSize:14, marginBottom:8 }}>{f.title}</h4>
-              <p style={{ fontSize:13, lineHeight:1.6 }}>{f.desc}</p>
+        <div style={{ textAlign: "center", marginBottom: 32 }}>
+          <h2 style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontSize: "clamp(20px,3vw,30px)", fontWeight: 800, marginBottom: 8 }}>Everything on SkillFinder</h2>
+          <p style={{ color: "#475569", fontSize: 14 }}>All tools are completely free to use</p>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px,1fr))", gap: 14, marginBottom: 48 }}>
+          {FEATURES.map((f, i) => (
+            <div key={i} style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 14, padding: "20px 18px" }}>
+              <span style={{ fontSize: 26, display: "block", marginBottom: 10 }}>{f.icon}</span>
+              <h4 style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontWeight: 700, fontSize: 15, marginBottom: 6, color: "#f1f5f9" }}>{f.title}</h4>
+              <p style={{ fontSize: 13, color: "#64748b", lineHeight: 1.65 }}>{f.desc}</p>
             </div>
           ))}
         </div>
 
-        {/* Tech Stack */}
-        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(200px,1fr))", gap:14, marginBottom:40 }}>
-          {[
-            { title:"Built With",     items:["React.js + Vite","Supabase Auth & DB","Adzuna API","Remotive API","Jooble API","Claude AI"] },
-            { title:"Designed For",   items:["Diploma Students","Engineering Students","Career Switchers","First-Gen Techies"] },
-            { title:"Core Principle", items:["Free Forever","No Ads","Real Data","AI-Powered","Student First"] },
-          ].map(b => (
-            <div key={b.title} className="job-card" style={{ padding:"22px 20px" }}>
-              <h4 style={{ fontSize:12, fontWeight:700, color:"#facc15", marginBottom:14, textTransform:"uppercase", letterSpacing:"0.08em" }}>{b.title}</h4>
-              {b.items.map(item => (
-                <div key={item} style={{ display:"flex", alignItems:"center", gap:8, marginBottom:8 }}>
-                  <div style={{ width:5, height:5, borderRadius:"50%", background:"linear-gradient(90deg,#facc15,#f97316)", flexShrink:0 }} />
-                  <span style={{ color:"#64748b", fontSize:13 }}>{item}</span>
-                </div>
-              ))}
-            </div>
-          ))}
+        {/* Tech stack */}
+        <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 14, padding: "24px 28px", marginBottom: 40 }}>
+          <h3 style={{ fontFamily: "'Plus Jakarta Sans',sans-serif", fontWeight: 700, fontSize: 16, marginBottom: 16, color: "#f1f5f9" }}>Built With</h3>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+            {["React.js", "Vite", "Supabase", "Adzuna API", "Remotive API", "Jooble API", "Netlify"].map(t => (
+              <span key={t} className="tag">{t}</span>
+            ))}
+          </div>
         </div>
 
         {/* CTA */}
-        <div style={{ background:"rgba(255,255,255,0.03)", border:"1px solid rgba(255,255,255,0.07)", borderRadius:20, padding:"44px", textAlign:"center", backdropFilter:"blur(20px)" }}>
-          <h2 style={{ fontSize:24, marginBottom:12 }}>Ready to find your path?</h2>
-          <p style={{ color:"#475569", fontSize:15, marginBottom:28 }}>Start with the quiz, explore roadmaps, and search real jobs — all free.</p>
-          <div style={{ display:"flex", gap:12, justifyContent:"center", flexWrap:"wrap" }}>
-            <button onClick={() => navigate("/quiz")}    style={{ padding:"12px 28px" }}>🎯 Take the Quiz</button>
-            <button onClick={() => navigate("/explore")} style={{ padding:"12px 28px", background:"rgba(255,255,255,0.05)", color:"#f1f5f9", border:"1px solid rgba(255,255,255,0.1)" }}>🧭 Explore Careers</button>
-            <button onClick={() => navigate("/interview")} style={{ padding:"12px 28px", background:"rgba(255,255,255,0.05)", color:"#f1f5f9", border:"1px solid rgba(255,255,255,0.1)" }}>🤖 Mock Interview</button>
-          </div>
+        <div style={{ textAlign: "center" }}>
+          <button onClick={() => navigate("/quiz")} style={{ padding: "13px 36px", fontSize: 15, borderRadius: 12, marginRight: 12 }}>
+            🎯 Take Career Quiz
+          </button>
+          <button onClick={() => navigate("/jobs")} style={{ padding: "13px 36px", fontSize: 15, borderRadius: 12, background: "rgba(255,255,255,0.05)", color: "#94a3b8", border: "1px solid rgba(255,255,255,0.1)" }}>
+            💼 Browse Jobs
+          </button>
         </div>
       </div>
     </div>

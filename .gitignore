@@ -3,7 +3,7 @@ node_modules/
 .pnp
 .pnp.js
 
-# Environment variables — NEVER upload these(security reasons)
+# Environment variables — NEVER upload these
 .env
 .env.local
 .env.production

@@ -89,7 +89,7 @@ export default function Signup() {
     localStorage.setItem("userEmail",         form.email);
     localStorage.setItem("userName",          form.fullName);
     localStorage.setItem("userQualification", form.qualification);
-    navigate("/home");
+    navigate("/onboarding");
     window.location.reload();
   };
 

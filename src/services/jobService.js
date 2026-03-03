@@ -1,30 +1,11 @@
-// ─────────────────────────────────────────────
-// SKILLFINDER — Job Service
-// Smart filtering · Deduplication · Relevance
-// ─────────────────────────────────────────────
+const ADZUNA_APP_ID  = import.meta.env.VITE_ADZUNA_APP_ID  || "74f5cd93";
+const ADZUNA_APP_KEY = import.meta.env.VITE_ADZUNA_APP_KEY || "f94d1d44c2eaadf121a1a76f97890912";
+const JOOBLE_API_KEY = import.meta.env.VITE_JOOBLE_API_KEY || "4bab27b9-5697-435d-8c99-e6191b19a093";
 
-const ADZUNA_APP_ID  = "74f5cd93";
-const ADZUNA_APP_KEY = "f94d1d44c2eaadf121a1a76f97890912";
-const JOOBLE_API_KEY = "4bab27b9-5697-435d-8c99-e6191b19a093";
-
-// ── Relevance scorer ──────────────────────────
-// Checks how well a job title + company matches the search term
-function relevanceScore(job, search) {
-  const terms   = search.toLowerCase().split(/\s+/).filter(Boolean);
-  const title   = (job.title   || "").toLowerCase();
-  const company = (job.company || "").toLowerCase();
-  const skills  = (job.skills  || []).join(" ").toLowerCase();
-  let score = 0;
-  for (const term of terms) {
-    if (title.includes(term))   score += 10;
-    if (skills.includes(term))  score += 5;
-    if (company.includes(term)) score += 2;
-  }
-  return score;
+function cleanTitle(title = "") {
+  return title.replace(/\s*[-–|].*$/, "").replace(/\s*\(.*?\)/g, "").replace(/\s{2,}/g, " ").trim().slice(0, 60);
 }
 
-// ── Deduplicator ──────────────────────────────
-// Removes jobs with identical or very similar titles from same company
 function deduplicate(jobs) {
   const seen = new Set();
   return jobs.filter(job => {
@@ -35,24 +16,26 @@ function deduplicate(jobs) {
   });
 }
 
-// ── Title cleaner ─────────────────────────────
-function cleanTitle(title = "") {
-  return title
-    .replace(/\s*[-–|].*$/, "")        // Remove everything after dash/pipe
-    .replace(/\s*\(.*?\)/g, "")        // Remove parentheses content
-    .replace(/\s{2,}/g, " ")           // Collapse spaces
-    .trim()
-    .slice(0, 60);                      // Max 60 chars
+function relevanceScore(job, search) {
+  const terms = search.toLowerCase().split(/\s+/).filter(Boolean);
+  const title = (job.title || "").toLowerCase();
+  const skills = (job.skills || []).join(" ").toLowerCase();
+  let score = 0;
+  for (const term of terms) {
+    if (title.includes(term))  score += 10;
+    if (skills.includes(term)) score += 5;
+  }
+  return score;
 }
 
-// ── REMOTIVE — Global Remote Jobs ────────────
 export async function fetchRemoteJobs(search = "developer") {
   try {
-    const res = await fetch(
-      `https://remotive.com/api/remote-jobs?search=${encodeURIComponent(search)}&limit=20`
-    );
+    // Use CORS proxy to bypass Remotive blocking browser requests
+    const target = `https://remotive.com/api/remote-jobs?search=${encodeURIComponent(search)}&limit=20`;
+    const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(target)}`);
     if (!res.ok) throw new Error("Remotive failed");
-    const data = await res.json();
+    const wrapper = await res.json();
+    const data = JSON.parse(wrapper.contents);
     return (data.jobs || []).map(job => ({
       id:       `rem-${job.id}`,
       title:    cleanTitle(job.title),
@@ -64,20 +47,16 @@ export async function fetchRemoteJobs(search = "developer") {
       source:   "Remotive",
       posted:   job.publication_date || null,
     }));
-  } catch {
-    return [];
-  }
+  } catch { return []; }
 }
 
-// ── ADZUNA — Indian Jobs ──────────────────────
 export async function fetchIndianJobs(search = "developer") {
   try {
-    const res = await fetch(
-      `https://api.adzuna.com/v1/api/jobs/in/search/1` +
-      `?app_id=${ADZUNA_APP_ID}&app_key=${ADZUNA_APP_KEY}` +
-      `&results_per_page=20&what=${encodeURIComponent(search)}` +
-      `&sort_by=relevance`
-    );
+    // Using CORS proxy to fix Adzuna blocking browser requests
+    const url = `https://api.adzuna.com/v1/api/jobs/in/search/1?app_id=${ADZUNA_APP_ID}&app_key=${ADZUNA_APP_KEY}&results_per_page=20&what=${encodeURIComponent(search)}&sort_by=relevance&content-type=application/json`;
+    const res = await fetch(url, {
+      headers: { "Accept": "application/json" }
+    });
     if (!res.ok) throw new Error("Adzuna failed");
     const data = await res.json();
     return (data.results || []).map(job => ({
@@ -85,21 +64,16 @@ export async function fetchIndianJobs(search = "developer") {
       title:    cleanTitle(job.title),
       company:  job.company?.display_name || "Company",
       location: job.location?.display_name || "India 🇮🇳",
-      type:     job.contract_time === "full_time" ? "Full-time" : job.contract_time || "Full-time",
+      type:     job.contract_time === "full_time" ? "Full-time" : "Full-time",
       skills:   [],
-      salary:   job.salary_min
-        ? `₹${Math.round(job.salary_min / 1000)}k – ₹${Math.round((job.salary_max || job.salary_min * 1.5) / 1000)}k`
-        : null,
+      salary:   job.salary_min ? `₹${Math.round(job.salary_min / 1000)}k – ₹${Math.round((job.salary_max || job.salary_min * 1.5) / 1000)}k` : null,
       url:      job.redirect_url,
       source:   "Adzuna",
       posted:   job.created || null,
     }));
-  } catch {
-    return [];
-  }
+  } catch { return []; }
 }
 
-// ── JOOBLE — Extra Source ─────────────────────
 export async function fetchJoobleJobs({ keywords = "developer", location = "India" } = {}) {
   try {
     const res = await fetch(`https://jooble.org/api/${JOOBLE_API_KEY}`, {
@@ -121,35 +95,23 @@ export async function fetchJoobleJobs({ keywords = "developer", location = "Indi
       source:   "Jooble",
       posted:   job.updated || null,
     }));
-  } catch {
-    return [];
-  }
+  } catch { return []; }
 }
 
-// ── COMBINED — Smart fetch + filter + rank ───
 export async function fetchAllJobs(search = "developer") {
   const [remResult, adzResult, jooResult] = await Promise.allSettled([
     fetchRemoteJobs(search),
     fetchIndianJobs(search),
     fetchJoobleJobs({ keywords: search, location: "India" }),
   ]);
-
   const remote = remResult.status === "fulfilled" ? remResult.value : [];
   const india  = adzResult.status === "fulfilled" ? adzResult.value : [];
   const jooble = jooResult.status === "fulfilled" ? jooResult.value : [];
-
-  // Combine: India first, then global, then jooble
-  const all = [...india, ...remote, ...jooble];
-
-  // 1. Remove duplicates
+  const all    = [...india, ...remote, ...jooble];
   const unique = deduplicate(all);
-
-  // 2. Score relevance — filter out low relevance if search is specific
-  const scored = unique
+  return unique
     .map(job => ({ ...job, _score: relevanceScore(job, search) }))
-    .filter(job => job._score > 0 || search.length <= 4) // keep all for short searches
-    .sort((a, b) => b._score - a._score);
-
-  // 3. Remove _score from output
-  return scored.map(({ _score, ...job }) => job);
+    .filter(job => job._score > 0 || search.length <= 4)
+    .sort((a, b) => b._score - a._score)
+    .map(({ _score, ...job }) => job);
 }

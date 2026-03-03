@@ -299,15 +299,28 @@ export default function Jobs() {
                       )}
                     </div>
 
-                    {/* Apply button */}
-                    <a
-                      href={job.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{ marginTop:16 }}
-                    >
-                      Apply Now →
-                    </a>
+                    {/* Apply + Save buttons */}
+                    <div style={{ display: "flex", gap: 8, marginTop: 16 }}>
+                      <a href={job.url} target="_blank" rel="noopener noreferrer"
+                        style={{ flex: 2, display: "block", textAlign: "center", padding: "9px", borderRadius: 10, background: "linear-gradient(135deg,#f59e0b,#f97316)", color: "#0a0a0a", fontWeight: 700, fontSize: 13, textDecoration: "none" }}>
+                        Apply →
+                      </a>
+                      <button
+                        onClick={() => {
+                          const saved = JSON.parse(localStorage.getItem("savedJobs") || "[]");
+                          const exists = saved.some(s => s.id === job.id);
+                          if (!exists) {
+                            saved.push({ ...job, status: "saved", savedAt: new Date().toISOString() });
+                            localStorage.setItem("savedJobs", JSON.stringify(saved));
+                            alert("⭐ Job saved! View it in Saved Jobs.");
+                          } else {
+                            alert("Already saved! Check Saved Jobs.");
+                          }
+                        }}
+                        style={{ flex: 1, padding: "9px", fontSize: 13, background: "rgba(245,158,11,0.08)", color: "#f59e0b", border: "1px solid rgba(245,158,11,0.2)", borderRadius: 10, boxShadow: "none", transform: "none" }}>
+                        ⭐
+                      </button>
+                    </div>
                   </div>
                 );
               })}
